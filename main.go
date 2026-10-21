@@ -5,6 +5,7 @@ import (
 
 	"github.com/seriiserii825/go-libs/color"
 	"github.com/seriiserii825/go-libs/fzf"
+	"github.com/seriiserii825/go-libs/input"
 	"github.com/seriiserii825/go-libs/menu"
 	"github.com/seriiserii825/go-libs/msg"
 	"github.com/seriiserii825/go-libs/table"
@@ -36,4 +37,9 @@ func main() {
 		color.Wrap(color.Red, "Exit"),
 	)
 	fmt.Println(n, ok, err)
+
+	w, err := input.PositiveInt("Width: ")
+	fmt.Println(w, err)
+	ok, err = input.Confirm("Continue?")
+	fmt.Println(ok, err)
 }
