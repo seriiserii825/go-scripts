@@ -30,10 +30,10 @@ var items = []item{
 	{color.Wrap(color.Green, "Open github or bitbucket"), notPorted},
 	{color.Wrap(color.Yellow, "Generate password"), notPorted},
 	{color.Wrap(color.Blue, "Calculate percentages"), scripts.CalcBlocks},
-	{color.Wrap(color.Green, "Aspect Ratio"), notPorted},
+	{color.Wrap(color.Green, "Aspect Ratio"), scripts.AspectRatio},
 	{color.Wrap(color.Blue, "Sort files"), notPorted},
 	{color.Wrap(color.Green, "Git mirror"), notPorted},
-	{color.Wrap(color.Green, "Get percent from width"), notPorted},
+	{color.Wrap(color.Green, "Get percent from width"), scripts.GetPercent},
 }
 
 func main() {
