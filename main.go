@@ -123,7 +123,7 @@ the clipboard:
   #3366cc, d, 20 -> #2952a3
 
 The color is mixed with white (lighten) or black (darken): 100% gives
-#ffffff / #000000. Accepts #RRGGBB, the # is optional.`,
+#ffffff / #000000. Accepts #RRGGBB and #RGB, the # is optional.`,
 			Color: color.Yellow,
 			Run:   scripts.ColorShade,
 		},

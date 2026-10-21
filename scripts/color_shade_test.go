@@ -11,7 +11,9 @@ func TestParseHex(t *testing.T) {
 		{"#3366cc", [3]int{0x33, 0x66, 0xcc}, true},
 		{" #FF5733\n", [3]int{0xff, 0x57, 0x33}, true},
 		{"ff5733", [3]int{0xff, 0x57, 0x33}, true},
-		{"#fff", [3]int{}, false},
+		{"#fff", [3]int{0xff, 0xff, 0xff}, true},
+		{"#36c", [3]int{0x33, 0x66, 0xcc}, true},
+		{"#ffff", [3]int{}, false},
 		{"#gg5733", [3]int{}, false},
 		{"", [3]int{}, false},
 	}

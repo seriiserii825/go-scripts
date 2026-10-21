@@ -48,7 +48,7 @@ func askHex() ([3]int, error) {
 	}
 	fmt.Println(color.Wrap(color.Yellow, "No hex color in the clipboard."))
 	for {
-		s, err := input.Line("Hex color (#RRGGBB): ")
+		s, err := input.Line("Hex color (#RRGGBB or #RGB): ")
 		if err != nil {
 			return [3]int{}, err
 		}
@@ -90,9 +90,13 @@ func askPercent() (int, error) {
 	}
 }
 
-// parseHex разбирает "#RRGGBB" (решётка необязательна, регистр любой).
+// parseHex разбирает "#RRGGBB" и короткий "#RGB" (#fff -> #ffffff);
+// решётка необязательна, регистр любой.
 func parseHex(s string) ([3]int, error) {
 	hex := strings.TrimPrefix(strings.TrimSpace(s), "#")
+	if len(hex) == 3 {
+		hex = string([]byte{hex[0], hex[0], hex[1], hex[1], hex[2], hex[2]})
+	}
 	if len(hex) != 6 {
 		return [3]int{}, errors.New("not a hex color, use #RRGGBB")
 	}
