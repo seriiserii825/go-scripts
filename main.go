@@ -127,6 +127,24 @@ The color is mixed with white (lighten) or black (darken): 100% gives
 			Color: color.Yellow,
 			Run:   scripts.ColorShade,
 		},
+		{
+			Name:  "color-palette",
+			Short: "Build a color palette",
+			Long: `Take a hex color from the clipboard (if there is none, ask for it)
+and build a palette of 10 shades in 10% steps. The color itself sits at
+50%, lower steps are darkened, higher steps are lightened by the same
+amount (40% -> darken 10%, 60% -> lighten 10%, 10% -> darken 40%, 100%
+-> lighten 50%). Copies the result as CSS custom properties to the
+clipboard:
+
+  --color-10: #907084;
+  ...
+  --color-50: #f0badc;
+  ...
+  --color-100: #f8ddee;`,
+			Color: color.Yellow,
+			Run:   scripts.ColorPalette,
+		},
 	},
 }
 
