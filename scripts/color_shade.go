@@ -8,33 +8,75 @@ import (
 
 	"github.com/seriiserii825/go-libs/clipboard"
 	"github.com/seriiserii825/go-libs/color"
+	"github.com/seriiserii825/go-libs/fzf"
 	"github.com/seriiserii825/go-libs/input"
+	"github.com/seriiserii825/go-libs/msg"
 	"github.com/seriiserii825/go-libs/tools"
 )
 
-// ColorShade берёт hex-цвет из буфера обмена (или спрашивает), осветляет или затемняет его на
-// заданный процент и копирует результат в буфер: #3366cc, l, 20 -> #5c85d6.
+// ColorShade берёт hex-цвет из буфера обмена (или спрашивает), строит на его
+// основе палитру из 10 оттенков с шагом 10% (сам цвет — в середине, на
+// 50%), даёт выбрать один через fzf и копирует выбранный цвет в буфер.
 func ColorShade() error {
-	if err := tools.Require(tools.Clipboard(), tools.Notify); err != nil {
+	if err := tools.Require(tools.Fzf, tools.FzfFilter, tools.Clipboard(), tools.Notify); err != nil {
 		return err
 	}
 	rgb, err := askHex()
 	if err != nil {
 		return err
 	}
-	fmt.Println("Color:", swatch(rgb), formatHex(rgb))
+	fmt.Println("Base color:", swatch(rgb), formatHex(rgb))
 
-	lighten, err := askLighten()
+	steps := buildPalette(rgb)
+	lines := make([]string, len(steps))
+	for i, step := range steps {
+		lines[i] = fmt.Sprintf("%s %3d%%  %s", swatch(step.rgb), step.index, formatHex(step.rgb))
+	}
+
+	out, code, err := fzf.Run(lines, []string{"--ansi", "--height", "50%", "--reverse", "--no-mouse"})
 	if err != nil {
 		return err
 	}
-	percent, err := askPercent()
+	if code != 0 {
+		msg.Warning("No color selected.")
+		return nil
+	}
+	selected := strings.TrimRight(out, "\n")
+	hex := selected[strings.LastIndex(selected, "#"):]
+	selectedRgb, err := parseHex(hex)
 	if err != nil {
 		return err
 	}
-	shaded := shade(rgb, lighten, percent)
-	fmt.Println("Result:", swatch(shaded), formatHex(shaded))
-	return clipboard.Write(formatHex(shaded))
+	fmt.Println("Selected:", swatch(selectedRgb), hex)
+	return clipboard.Write(hex)
+}
+
+type paletteStep struct {
+	index int
+	rgb   [3]int
+}
+
+// buildPalette строит 10 оттенков (10%..100%) от rgb: 50% — сам цвет,
+// каждые 10 пунктов разницы с 50 — это shade на такой же процент (40% и
+// 60% — ±10%, 10% и 100% — ±40%/50%).
+func buildPalette(rgb [3]int) []paletteStep {
+	steps := make([]paletteStep, 0, 10)
+	for index := 10; index <= 100; index += 10 {
+		diff := index - 50
+		if diff == 0 {
+			steps = append(steps, paletteStep{index, rgb})
+			continue
+		}
+		steps = append(steps, paletteStep{index, shade(rgb, diff > 0, abs(diff))})
+	}
+	return steps
+}
+
+func abs(n int) int {
+	if n < 0 {
+		return -n
+	}
+	return n
 }
 
 // askHex берёт цвет из буфера обмена, а если там не hex — спрашивает, пока
@@ -57,36 +99,6 @@ func askHex() ([3]int, error) {
 			return rgb, nil
 		}
 		fmt.Println(color.Wrap(color.Red, "Invalid input. "+err.Error()+"."))
-	}
-}
-
-// askLighten спрашивает l/d, пока не введут правильно: true — осветлить.
-func askLighten() (bool, error) {
-	for {
-		s, err := input.Line("Lighten or darken? (l/d): ")
-		if err != nil {
-			return false, err
-		}
-		switch strings.ToLower(s) {
-		case "l", "lighten":
-			return true, nil
-		case "d", "darken":
-			return false, nil
-		}
-		fmt.Println(color.Wrap(color.Red, "Invalid input. Enter l or d."))
-	}
-}
-
-func askPercent() (int, error) {
-	for {
-		n, err := input.PositiveInt("Percent (1-100): ")
-		if err != nil {
-			return 0, err
-		}
-		if n <= 100 {
-			return n, nil
-		}
-		fmt.Println(color.Wrap(color.Red, "Invalid input. Max is 100."))
 	}
 }
 

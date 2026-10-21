@@ -114,36 +114,17 @@ to the clipboard:
 		},
 		{
 			Name:  "color-shade",
-			Short: "Lighten/darken color",
+			Short: "Color palette (light/dark)",
 			Long: `Take a hex color from the clipboard (if there is none, ask for it),
-ask lighten or darken (l/d) and the percent (1-100), copy the result to
-the clipboard:
+build a palette of 10 shades in 10% steps (the color itself sits in the
+middle, at 50%; lower steps are darkened, higher steps are lightened by
+the same amount), pick one with fzf and copy it to the clipboard.
 
-  #3366cc, l, 20 -> #5c85d6
-  #3366cc, d, 20 -> #2952a3
+  #f0badc -> 10% #907084 ... 50% #f0badc ... 100% #f8ddee
 
-The color is mixed with white (lighten) or black (darken): 100% gives
-#ffffff / #000000. Accepts #RRGGBB and #RGB, the # is optional.`,
+Accepts #RRGGBB and #RGB, the # is optional.`,
 			Color: color.Yellow,
 			Run:   scripts.ColorShade,
-		},
-		{
-			Name:  "color-palette",
-			Short: "Build a color palette",
-			Long: `Take a hex color from the clipboard (if there is none, ask for it)
-and build a palette of 10 shades in 10% steps. The color itself sits at
-50%, lower steps are darkened, higher steps are lightened by the same
-amount (40% -> darken 10%, 60% -> lighten 10%, 10% -> darken 40%, 100%
--> lighten 50%). Copies the result as CSS custom properties to the
-clipboard:
-
-  --color-10: #907084;
-  ...
-  --color-50: #f0badc;
-  ...
-  --color-100: #f8ddee;`,
-			Color: color.Yellow,
-			Run:   scripts.ColorPalette,
 		},
 	},
 }
