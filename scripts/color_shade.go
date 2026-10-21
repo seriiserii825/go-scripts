@@ -12,19 +12,15 @@ import (
 	"github.com/seriiserii825/go-libs/tools"
 )
 
-// ColorShade берёт hex-цвет из буфера обмена, осветляет или затемняет его на
+// ColorShade берёт hex-цвет из буфера обмена (или спрашивает), осветляет или затемняет его на
 // заданный процент и копирует результат в буфер: #3366cc, l, 20 -> #5c85d6.
 func ColorShade() error {
 	if err := tools.Require(tools.Clipboard(), tools.Notify); err != nil {
 		return err
 	}
-	text, err := clipboard.Read()
+	rgb, err := askHex()
 	if err != nil {
 		return err
-	}
-	rgb, err := parseHex(text)
-	if err != nil {
-		return fmt.Errorf("clipboard %q: %w", text, err)
 	}
 	fmt.Println("Color:", swatch(rgb), formatHex(rgb))
 
@@ -39,6 +35,29 @@ func ColorShade() error {
 	shaded := shade(rgb, lighten, percent)
 	fmt.Println("Result:", swatch(shaded), formatHex(shaded))
 	return clipboard.Write(formatHex(shaded))
+}
+
+// askHex берёт цвет из буфера обмена, а если там не hex — спрашивает, пока
+// не введут правильно.
+func askHex() ([3]int, error) {
+	// пустой буфер — тоже ошибка (xclip выходит с 1), просто спрашиваем
+	if text, err := clipboard.Read(); err == nil {
+		if rgb, err := parseHex(text); err == nil {
+			return rgb, nil
+		}
+	}
+	fmt.Println(color.Wrap(color.Yellow, "No hex color in the clipboard."))
+	for {
+		s, err := input.Line("Hex color (#RRGGBB): ")
+		if err != nil {
+			return [3]int{}, err
+		}
+		rgb, err := parseHex(s)
+		if err == nil {
+			return rgb, nil
+		}
+		fmt.Println(color.Wrap(color.Red, "Invalid input. "+err.Error()+"."))
+	}
 }
 
 // askLighten спрашивает l/d, пока не введут правильно: true — осветлить.

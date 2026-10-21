@@ -115,8 +115,9 @@ to the clipboard:
 		{
 			Name:  "color-shade",
 			Short: "Lighten/darken color",
-			Long: `Take a hex color from the clipboard, ask lighten or darken (l/d) and
-the percent (1-100), copy the result to the clipboard:
+			Long: `Take a hex color from the clipboard (if there is none, ask for it),
+ask lighten or darken (l/d) and the percent (1-100), copy the result to
+the clipboard:
 
   #3366cc, l, 20 -> #5c85d6
   #3366cc, d, 20 -> #2952a3
