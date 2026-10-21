@@ -5,49 +5,101 @@ import (
 	"io"
 	"os"
 
+	"github.com/seriiserii825/go-libs/cli"
 	"github.com/seriiserii825/go-libs/color"
-	"github.com/seriiserii825/go-libs/menu"
 	"github.com/seriiserii825/go-libs/msg"
 
 	"github.com/seriiserii825/go-scripts/scripts"
 )
-
-type item struct {
-	label string
-	run   func() error
-}
 
 func notPorted() error {
 	msg.Warning("Not ported to Go yet")
 	return nil
 }
 
-var items = []item{
-	{color.Wrap(color.Green, "Create project"), notPorted},
-	{color.Wrap(color.Blue, "Convert fonts"), notPorted},
-	{color.Wrap(color.Green, "Cyr to lat"), scripts.CyrToLat},
-	{color.Wrap(color.Yellow, "Generate password"), scripts.GeneratePassword},
-	{color.Wrap(color.Green, "Aspect Ratio"), scripts.AspectRatio},
-	{color.Wrap(color.Blue, "Sort files"), scripts.SortFiles},
-	{color.Wrap(color.Green, "Get percent from width"), scripts.GetPercent},
+var app = cli.App{
+	Name: "go-scripts",
+	Commands: []cli.Command{
+		{
+			Name:  "create-project",
+			Short: "Create project",
+			Long:  "Not ported to Go yet.",
+			Color: color.Green,
+			Run:   notPorted,
+		},
+		{
+			Name:  "convert-fonts",
+			Short: "Convert fonts",
+			Long:  "Not ported to Go yet.",
+			Color: color.Blue,
+			Run:   notPorted,
+		},
+		{
+			Name:  "cyr-to-lat",
+			Short: "Cyr to lat",
+			Long: `Pick a file in the current folder with fzf, strip its ID3 tags
+(id3convert -s, skipped if not installed) and rename it from Cyrillic
+to Latin:
+
+  "Песня Щука.mp3" -> "Pesnya SCHuka.mp3"
+
+Fails if a file with the new name already exists.`,
+			Color: color.Green,
+			Run:   scripts.CyrToLat,
+		},
+		{
+			Name:  "generate-password",
+			Short: "Generate password",
+			Long: `Ask the password length and whether to include symbols (y/n),
+generate 10 random passwords (crypto/rand), pick one with fzf and copy
+it to the clipboard. The password is not shown in the notification.`,
+			Color: color.Yellow,
+			Run:   scripts.GeneratePassword,
+		},
+		{
+			Name:  "aspect-ratio",
+			Short: "Aspect Ratio",
+			Long: `Ask width and height separated by comma and copy the CSS property
+to the clipboard:
+
+  1920,1080 -> aspect-ratio: 1.78/1;
+  1080,1920 -> aspect-ratio: 1/1.78;`,
+			Color: color.Green,
+			Run:   scripts.AspectRatio,
+		},
+		{
+			Name:  "sort-files",
+			Short: "Sort files",
+			Long: `Copy every file from the current folder and its subfolders into
+folders by extension. Originals stay in place:
+
+  sub/photo.jpg -> jpg/photo.jpg
+  doc.pdf       -> pdf/doc.pdf
+
+Skipped: hidden files and folders (.git, .env), files without
+extension, files already in their extension folder. Files with the
+same name overwrite each other. JPG and jpg go to different folders.
+
+After copying, empty subfolders are removed. Asks for confirmation
+(y/n) first.`,
+			Color: color.Blue,
+			Run:   scripts.SortFiles,
+		},
+		{
+			Name:  "get-percent",
+			Short: "Get percent from width",
+			Long: `Ask full width and width separated by comma and copy the percent
+to the clipboard:
+
+  1000,300 -> 30.00%`,
+			Color: color.Green,
+			Run:   scripts.GetPercent,
+		},
+	},
 }
 
 func main() {
-	labels := make([]string, len(items))
-	for i, it := range items {
-		labels[i] = it.label
-	}
-
-	n, ok, err := menu.SelectFzfMenu(labels, "Scripts", color.Wrap(color.Red, "Exit"))
-	if err != nil {
-		msg.Error(err.Error())
-		os.Exit(1)
-	}
-	if !ok || n == 0 {
-		return
-	}
-
-	if err := items[n-1].run(); err != nil && !errors.Is(err, io.EOF) {
+	if err := app.Run(os.Args[1:]); err != nil && !errors.Is(err, io.EOF) {
 		msg.Error(err.Error())
 		os.Exit(1)
 	}
