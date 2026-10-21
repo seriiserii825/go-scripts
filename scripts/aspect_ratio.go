@@ -11,6 +11,9 @@ import (
 // AspectRatio спрашивает ширину и высоту и копирует в буфер обмена
 // CSS-свойство: "aspect-ratio: 1.78/1;".
 func AspectRatio() error {
+	if err := require(toolClipboard(), toolNotify); err != nil {
+		return err
+	}
 	width, height, err := askPair("Enter width and height w,h: ")
 	if err != nil {
 		return err

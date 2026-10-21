@@ -32,10 +32,15 @@ func ConvertFonts() error {
 		return nil
 	}
 
+	tools := []tool{toolClipboard(), toolNotify}
 	if len(ttf) > 0 {
-		if err := checkFontTools(); err != nil {
-			return err
-		}
+		tools = append(tools, toolTTF2Woff, toolWoff2)
+	}
+	if err := require(tools...); err != nil {
+		return err
+	}
+
+	if len(ttf) > 0 {
 		for _, f := range ttf {
 			// Битый шрифт не должен останавливать остальные: пропускаем его
 			// и оставляем .ttf на месте.
@@ -84,20 +89,6 @@ func convertTTF(f string) error {
 		os.Remove(base + ".woff")
 		os.Remove(base + ".woff2")
 		return err
-	}
-	return nil
-}
-
-func checkFontTools() error {
-	var missing []string
-	if !command.Exists("ttf2woff") {
-		missing = append(missing, "ttf2woff (npm install -g ttf2woff)")
-	}
-	if !command.Exists("woff2_compress") {
-		missing = append(missing, "woff2_compress (sudo pacman -S woff2)")
-	}
-	if len(missing) > 0 {
-		return fmt.Errorf("not installed: %s", strings.Join(missing, ", "))
 	}
 	return nil
 }

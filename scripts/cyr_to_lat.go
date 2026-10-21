@@ -29,6 +29,9 @@ var cyrToLatReplacer = strings.NewReplacer(
 // CyrToLat даёт выбрать файл в текущей папке, убирает из него ID3-теги
 // (id3convert -s) и переименовывает кириллицу в латиницу.
 func CyrToLat() error {
+	if err := require(toolFzf, toolFzfFilter, toolID3); err != nil {
+		return err
+	}
 	files, err := visibleFiles()
 	if err != nil {
 		return err

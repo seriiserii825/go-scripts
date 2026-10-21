@@ -21,6 +21,9 @@ const (
 // GeneratePassword генерирует 10 паролей, даёт выбрать один в fzf и копирует
 // его в буфер обмена (в уведомлении пароль не показывается).
 func GeneratePassword() error {
+	if err := require(toolFzf, toolFzfFilter, toolClipboard(), toolNotify); err != nil {
+		return err
+	}
 	length, err := input.PositiveInt("Enter the length of the password: ")
 	if err != nil {
 		return err

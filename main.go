@@ -116,6 +116,12 @@ to the clipboard:
 }
 
 func main() {
+	if len(os.Args) == 1 { // без аргументов — fzf-меню
+		if err := scripts.CheckMenuTools(); err != nil {
+			msg.Error(err.Error())
+			os.Exit(1)
+		}
+	}
 	if err := app.Run(os.Args[1:]); err != nil && !errors.Is(err, io.EOF) {
 		msg.Error(err.Error())
 		os.Exit(1)
