@@ -112,6 +112,20 @@ to the clipboard:
 			Color: color.Green,
 			Run:   scripts.GetPercent,
 		},
+		{
+			Name:  "color-shade",
+			Short: "Lighten/darken color",
+			Long: `Take a hex color from the clipboard, ask lighten or darken (l/d) and
+the percent (1-100), copy the result to the clipboard:
+
+  #3366cc, l, 20 -> #5c85d6
+  #3366cc, d, 20 -> #2952a3
+
+The color is mixed with white (lighten) or black (darken): 100% gives
+#ffffff / #000000. Accepts #RRGGBB, the # is optional.`,
+			Color: color.Yellow,
+			Run:   scripts.ColorShade,
+		},
 	},
 }
 
