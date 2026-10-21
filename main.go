@@ -29,7 +29,6 @@ var items = []item{
 	{color.Wrap(color.Blue, "Bitbucket change url"), notPorted},
 	{color.Wrap(color.Green, "Open github or bitbucket"), notPorted},
 	{color.Wrap(color.Yellow, "Generate password"), notPorted},
-	{color.Wrap(color.Blue, "Calculate percentages"), scripts.CalcBlocks},
 	{color.Wrap(color.Green, "Aspect Ratio"), scripts.AspectRatio},
 	{color.Wrap(color.Blue, "Sort files"), notPorted},
 	{color.Wrap(color.Green, "Git mirror"), notPorted},
