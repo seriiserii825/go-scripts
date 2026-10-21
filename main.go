@@ -12,27 +12,44 @@ import (
 	"github.com/seriiserii825/go-scripts/scripts"
 )
 
-func notPorted() error {
-	msg.Warning("Not ported to Go yet")
-	return nil
-}
-
 var app = cli.App{
 	Name: "go-scripts",
 	Commands: []cli.Command{
 		{
 			Name:  "create-project",
 			Short: "Create project",
-			Long:  "Not ported to Go yet.",
+			Long: `Create a new WordPress theme in the current folder from the starter
+~/Documents/Sites/wp-projects/bs-vite:
+
+  - copies the starter into ./<project-name> (without .git)
+  - replaces bs-vite with <project-name> in all files
+  - replaces bs_vite with <project_name> (dashes -> underscores)
+
+  my-site -> ./my-site, "bs-vite" -> "my-site", "bs_vite" -> "my_site"
+
+Fails if ./<project-name> already exists or the starter is missing.`,
 			Color: color.Green,
-			Run:   notPorted,
+			Run:   scripts.CreateProject,
 		},
 		{
 			Name:  "convert-fonts",
 			Short: "Convert fonts",
-			Long:  "Not ported to Go yet.",
+			Long: `Run from the folder with font files (FontName-Weight.ttf):
+
+  - converts every .ttf to .woff (ttf2woff) and .woff2 (woff2_compress),
+    the .ttf is removed only if both conversions succeed
+  - asks the relative path to fonts (default: assets/fonts)
+  - writes fonts.css with @font-face for every font and copies it
+    to the clipboard
+
+Weight and style come from the file name: Thin 100, ExtraLight 200,
+Light 300, Regular normal, Medium 500, SemiBold/DemiBold 600, Bold 700,
+ExtraBold 800, Black/Heavy 900, Italic -> font-style: italic.
+font-family is the part before the first "-": OpenSans-Bold -> OpenSans.
+
+Needs: npm install -g ttf2woff, sudo pacman -S woff2.`,
 			Color: color.Blue,
-			Run:   notPorted,
+			Run:   scripts.ConvertFonts,
 		},
 		{
 			Name:  "cyr-to-lat",
