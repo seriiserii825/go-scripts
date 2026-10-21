@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 
+	"github.com/seriiserii825/go-libs/color"
 	"github.com/seriiserii825/go-libs/fzf"
 	"github.com/seriiserii825/go-libs/msg"
+	"github.com/seriiserii825/go-libs/table"
 )
 
 func main() {
@@ -14,4 +16,16 @@ func main() {
 
 	s, ok, err := fzf.One([]string{"Restore from Downloads", "Backup"})
 	fmt.Println(s, ok, err)
+
+	table.Show("Сайты", []string{"#", "Name", "Status"}, [][]string{
+		{"0", "Restore from Downloads", "ok"},
+		{"1", "Бэкап", "fail"},
+		{"2", "Deploy", "ok"},
+	}, map[int]string{1: color.Red})
+
+	var items []string
+	for i := range 30 {
+		items = append(items, fmt.Sprintf("пункт-%02d", i))
+	}
+	table.Grid(items, color.Blue)
 }
