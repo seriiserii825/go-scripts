@@ -1,45 +1,58 @@
 package main
 
 import (
-	"fmt"
+	"errors"
+	"io"
+	"os"
 
-	"github.com/seriiserii825/go-libs/clipboard"
+	"github.com/seriiserii825/go-libs/color"
+	"github.com/seriiserii825/go-libs/menu"
+	"github.com/seriiserii825/go-libs/msg"
+
+	"github.com/seriiserii825/go-scripts/scripts"
 )
 
+type item struct {
+	label string
+	run   func() error
+}
+
+func notPorted() error {
+	msg.Warning("Not ported to Go yet")
+	return nil
+}
+
+var items = []item{
+	{color.Wrap(color.Green, "Create project"), notPorted},
+	{color.Wrap(color.Blue, "Convert fonts"), notPorted},
+	{color.Wrap(color.Green, "Cyr to lat"), notPorted},
+	{color.Wrap(color.Blue, "Bitbucket change url"), notPorted},
+	{color.Wrap(color.Green, "Open github or bitbucket"), notPorted},
+	{color.Wrap(color.Yellow, "Generate password"), notPorted},
+	{color.Wrap(color.Blue, "Calculate percentages"), scripts.CalcBlocks},
+	{color.Wrap(color.Green, "Aspect Ratio"), notPorted},
+	{color.Wrap(color.Blue, "Sort files"), notPorted},
+	{color.Wrap(color.Green, "Git mirror"), notPorted},
+	{color.Wrap(color.Green, "Get percent from width"), notPorted},
+}
+
 func main() {
-	// errorMessage := "An error occurred"
-	// msg.Success("Hello, World!")
-	// msg.Error(errorMessage)
-	//
-	// s, ok, err := fzf.One([]string{"Restore from Downloads", "Backup"})
-	// fmt.Println(s, ok, err)
-	//
-	// table.Show("Сайты", []string{"#", "Name", "Status"}, [][]string{
-	// 	{"0", "Restore from Downloads", "ok"},
-	// 	{"1", "Бэкап", "fail"},
-	// 	{"2", "Deploy", "ok"},
-	// }, map[int]string{1: color.Red})
-	//
-	// var items []string
-	// for i := range 30 {
-	// 	items = append(items, fmt.Sprintf("пункт-%02d", i))
-	// }
-	// table.Grid(items, color.Blue)
-	//
-	// n, ok, err := menu.SelectFzfMenu(
-	// 	[]string{color.Wrap(color.Green, "Deploy"), "Backup"},
-	// 	"Что делаем?",
-	// 	color.Wrap(color.Red, "Exit"),
-	// )
-	// fmt.Println(n, ok, err)
-	//
-	// w, err := input.PositiveInt("Width: ")
-	// fmt.Println(w, err)
-	// ok, err = input.Confirm("Continue?")
-	// fmt.Println(ok, err)
-	//
-	err := clipboard.Write("16:9")
-	fmt.Println(err)
-	s, err := clipboard.Read()
-	fmt.Println(s, err)
+	labels := make([]string, len(items))
+	for i, it := range items {
+		labels[i] = it.label
+	}
+
+	n, ok, err := menu.SelectFzfMenu(labels, "Scripts", color.Wrap(color.Red, "Exit"))
+	if err != nil {
+		msg.Error(err.Error())
+		os.Exit(1)
+	}
+	if !ok || n == 0 {
+		return
+	}
+
+	if err := items[n-1].run(); err != nil && !errors.Is(err, io.EOF) {
+		msg.Error(err.Error())
+		os.Exit(1)
+	}
 }
