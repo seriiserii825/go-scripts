@@ -58,6 +58,13 @@ func createProject(starter, dst, name string) error {
 	} else if !errors.Is(err, fs.ErrNotExist) {
 		return err
 	}
+	// dst внутри starter → WalkDir зайдёт в только что созданную папку
+	// и будет копировать её саму в себя до "file name too long".
+	if inside, err := isInside(dst, starter); err != nil {
+		return err
+	} else if inside {
+		return fmt.Errorf("cannot create project inside the starter %s, cd to another folder", starter)
+	}
 
 	replacer := strings.NewReplacer(
 		starterName, name,
@@ -97,4 +104,26 @@ func createProject(starter, dst, name string) error {
 		}
 		return os.WriteFile(target, data, info.Mode().Perm())
 	})
+}
+
+// isInside сообщает, лежит ли path (может ещё не существовать) внутри dir,
+// с учётом симлинков.
+func isInside(path, dir string) (bool, error) {
+	dir, err := filepath.EvalSymlinks(dir)
+	if err != nil {
+		return false, err
+	}
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		return false, err
+	}
+	parent, err := filepath.EvalSymlinks(filepath.Dir(abs))
+	if err != nil {
+		return false, err
+	}
+	rel, err := filepath.Rel(dir, filepath.Join(parent, filepath.Base(abs)))
+	if err != nil {
+		return false, err
+	}
+	return rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)), nil
 }

@@ -51,4 +51,10 @@ func TestCreateProject(t *testing.T) {
 	if err := createProject(filepath.Join(t.TempDir(), "nope"), filepath.Join(t.TempDir(), "x"), "x"); err == nil {
 		t.Error("missing starter: want error")
 	}
+	if err := createProject(starter, filepath.Join(starter, "inner"), "inner"); err == nil {
+		t.Error("dst inside starter: want error")
+	}
+	if _, err := os.Stat(filepath.Join(starter, "inner")); err == nil {
+		t.Error("dst inside starter: nothing should be created")
+	}
 }
