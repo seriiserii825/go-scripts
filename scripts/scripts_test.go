@@ -1,6 +1,9 @@
 package scripts
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestParsePair(t *testing.T) {
 	tests := []struct {
@@ -33,6 +36,24 @@ func TestAspectRatio(t *testing.T) {
 	for in, want := range tests {
 		if got := aspectRatio(in[0], in[1]); got != want {
 			t.Errorf("aspectRatio(%d, %d) = %q, want %q", in[0], in[1], got, want)
+		}
+	}
+}
+
+func TestNewPassword(t *testing.T) {
+	for _, symbols := range []bool{false, true} {
+		allowed := lowercase + digits + uppercase
+		if symbols {
+			allowed += punctuation
+		}
+		p, err := newPassword(32, symbols)
+		if err != nil || len(p) != 32 {
+			t.Fatalf("newPassword(32, %v) = %q, %v", symbols, p, err)
+		}
+		for _, c := range p {
+			if !strings.ContainsRune(allowed, c) {
+				t.Errorf("newPassword(32, %v): unexpected char %q", symbols, c)
+			}
 		}
 	}
 }
