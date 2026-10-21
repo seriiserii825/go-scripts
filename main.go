@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import "github.com/seriiserii825/go-libs/msg"
 
 func main() {
-	fmt.Println("Hello, World!")
+	errorMessage := "An error occurred"
+	msg.Success("Hello, World!")
+	msg.Error(errorMessage)
 }
