@@ -25,7 +25,7 @@ func notPorted() error {
 var items = []item{
 	{color.Wrap(color.Green, "Create project"), notPorted},
 	{color.Wrap(color.Blue, "Convert fonts"), notPorted},
-	{color.Wrap(color.Green, "Cyr to lat"), notPorted},
+	{color.Wrap(color.Green, "Cyr to lat"), scripts.CyrToLat},
 	{color.Wrap(color.Blue, "Bitbucket change url"), notPorted},
 	{color.Wrap(color.Green, "Open github or bitbucket"), notPorted},
 	{color.Wrap(color.Yellow, "Generate password"), scripts.GeneratePassword},

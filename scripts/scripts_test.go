@@ -57,3 +57,17 @@ func TestNewPassword(t *testing.T) {
 		}
 	}
 }
+
+func TestCyrToLat(t *testing.T) {
+	tests := map[string]string{
+		"Песня - Щука.mp3":  "Pesnya - SCHuka.mp3",
+		"ЁЖИК Юла.mp3":      "YOZHIK YUla.mp3",
+		"already latin.mp3": "already latin.mp3",
+		"Объём":             "Obiyom",
+	}
+	for in, want := range tests {
+		if got := cyrToLatReplacer.Replace(in); got != want {
+			t.Errorf("cyrToLat(%q) = %q, want %q", in, got, want)
+		}
+	}
+}
