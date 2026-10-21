@@ -5,6 +5,7 @@ import (
 
 	"github.com/seriiserii825/go-libs/color"
 	"github.com/seriiserii825/go-libs/fzf"
+	"github.com/seriiserii825/go-libs/menu"
 	"github.com/seriiserii825/go-libs/msg"
 	"github.com/seriiserii825/go-libs/table"
 )
@@ -28,4 +29,11 @@ func main() {
 		items = append(items, fmt.Sprintf("пункт-%02d", i))
 	}
 	table.Grid(items, color.Blue)
+
+	n, ok, err := menu.SelectFzfMenu(
+		[]string{color.Wrap(color.Green, "Deploy"), "Backup"},
+		"Что делаем?",
+		color.Wrap(color.Red, "Exit"),
+	)
+	fmt.Println(n, ok, err)
 }
