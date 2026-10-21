@@ -14,6 +14,7 @@ import (
 	"github.com/seriiserii825/go-libs/command"
 	"github.com/seriiserii825/go-libs/input"
 	"github.com/seriiserii825/go-libs/msg"
+	"github.com/seriiserii825/go-libs/tools"
 )
 
 // ConvertFonts конвертирует .ttf из текущей папки в .woff и .woff2 (ttf
@@ -32,11 +33,11 @@ func ConvertFonts() error {
 		return nil
 	}
 
-	tools := []tool{toolClipboard(), toolNotify}
+	need := []tools.Tool{tools.Clipboard(), tools.Notify}
 	if len(ttf) > 0 {
-		tools = append(tools, toolTTF2Woff, toolWoff2)
+		need = append(need, toolTTF2Woff, toolWoff2)
 	}
-	if err := require(tools...); err != nil {
+	if err := tools.Require(need...); err != nil {
 		return err
 	}
 

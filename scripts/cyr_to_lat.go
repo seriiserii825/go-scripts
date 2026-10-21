@@ -11,6 +11,7 @@ import (
 	"github.com/seriiserii825/go-libs/command"
 	"github.com/seriiserii825/go-libs/fzf"
 	"github.com/seriiserii825/go-libs/msg"
+	"github.com/seriiserii825/go-libs/tools"
 )
 
 var cyrToLatReplacer = strings.NewReplacer(
@@ -29,7 +30,7 @@ var cyrToLatReplacer = strings.NewReplacer(
 // CyrToLat даёт выбрать файл в текущей папке, убирает из него ID3-теги
 // (id3convert -s) и переименовывает кириллицу в латиницу.
 func CyrToLat() error {
-	if err := require(toolFzf, toolFzfFilter, toolID3); err != nil {
+	if err := tools.Require(tools.Fzf, tools.FzfFilter, toolID3); err != nil {
 		return err
 	}
 	files, err := visibleFiles()

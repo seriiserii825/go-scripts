@@ -9,6 +9,7 @@ import (
 	"github.com/seriiserii825/go-libs/fzf"
 	"github.com/seriiserii825/go-libs/input"
 	"github.com/seriiserii825/go-libs/msg"
+	"github.com/seriiserii825/go-libs/tools"
 )
 
 const (
@@ -21,7 +22,7 @@ const (
 // GeneratePassword генерирует 10 паролей, даёт выбрать один в fzf и копирует
 // его в буфер обмена (в уведомлении пароль не показывается).
 func GeneratePassword() error {
-	if err := require(toolFzf, toolFzfFilter, toolClipboard(), toolNotify); err != nil {
+	if err := tools.Require(tools.Fzf, tools.FzfFilter, tools.Clipboard(), tools.Notify); err != nil {
 		return err
 	}
 	length, err := input.PositiveInt("Enter the length of the password: ")

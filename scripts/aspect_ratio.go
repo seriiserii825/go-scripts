@@ -6,12 +6,13 @@ import (
 	"strconv"
 
 	"github.com/seriiserii825/go-libs/clipboard"
+	"github.com/seriiserii825/go-libs/tools"
 )
 
 // AspectRatio спрашивает ширину и высоту и копирует в буфер обмена
 // CSS-свойство: "aspect-ratio: 1.78/1;".
 func AspectRatio() error {
-	if err := require(toolClipboard(), toolNotify); err != nil {
+	if err := tools.Require(tools.Clipboard(), tools.Notify); err != nil {
 		return err
 	}
 	width, height, err := askPair("Enter width and height w,h: ")
