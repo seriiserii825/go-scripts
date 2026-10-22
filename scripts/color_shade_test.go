@@ -50,11 +50,12 @@ func TestShade(t *testing.T) {
 func TestBuildPalette(t *testing.T) {
 	rgb, _ := parseHex("#f0badc")
 	steps := buildPalette(rgb)
-	if len(steps) != 10 {
-		t.Fatalf("len(steps) = %d, want 10", len(steps))
+	if len(steps) != 11 {
+		t.Fatalf("len(steps) = %d, want 11", len(steps))
 	}
 
 	want := map[int]string{
+		0:   "#785d6e",
 		10:  "#907084",
 		20:  "#a8829a",
 		30:  "#c095b0",

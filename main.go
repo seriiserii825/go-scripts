@@ -116,11 +116,12 @@ to the clipboard:
 			Name:  "color-shade",
 			Short: "Color palette (light/dark)",
 			Long: `Take a hex color from the clipboard (if there is none, ask for it),
-build a palette of 10 shades in 10% steps (the color itself sits in the
+build a palette of 11 shades in 10% steps (the color itself sits in the
 middle, at 50%; lower steps are darkened, higher steps are lightened by
-the same amount), pick one with fzf and copy it to the clipboard.
+the same amount), show them as a numbered list, ask for a number
+and copy that color to the clipboard (0 — exit).
 
-  #f0badc -> 10% #907084 ... 50% #f0badc ... 100% #f8ddee
+  #f0badc -> 0% #785d6e ... 50% #f0badc ... 100% #f8ddee
 
 Accepts #RRGGBB and #RGB, the # is optional.`,
 			Color: color.Yellow,
