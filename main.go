@@ -126,6 +126,21 @@ Accepts #RRGGBB and #RGB, the # is optional.`,
 			Color: color.Yellow,
 			Run:   scripts.ColorShade,
 		},
+		{
+			Name:  "rgb-to-hex",
+			Short: "Convert color rgb to hex",
+			Long: `Take an rgb color from the clipboard (if there is none, ask for it),
+convert it to hex and copy it to the clipboard.
+
+  rgb(255, 87, 51)          -> #ff5733
+  255,87,51                 -> #ff5733
+  rgba(255, 87, 51, 0.5)    -> #ff573380
+  rgb(255 87 51 / 50%)      -> #ff573380
+
+Alpha is added as the last two hex digits only if it is less than 1.`,
+			Color: color.Blue,
+			Run:   scripts.RgbToHex,
+		},
 	},
 }
 
