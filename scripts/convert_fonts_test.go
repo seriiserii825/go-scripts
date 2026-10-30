@@ -39,12 +39,28 @@ func TestFontFamily(t *testing.T) {
 }
 
 func TestFontsCSS(t *testing.T) {
-	files := []string{"Roboto-Bold.woff", "Roboto-Bold.woff2", "Roboto-Italic.woff2", "fonts.css"}
+	files := []string{"Roboto-Bold.woff", "Roboto-Bold.woff2", "Roboto-Italic.woff2", "Roboto-Light.woff", "fonts.css"}
 	want := `@font-face {
   font-family: 'Roboto';
   src: url('assets/fonts/Roboto-Bold.woff2') format('woff2'),
        url('assets/fonts/Roboto-Bold.woff') format('woff');
   font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('assets/fonts/Roboto-Italic.woff2') format('woff2');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('assets/fonts/Roboto-Light.woff') format('woff');
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }

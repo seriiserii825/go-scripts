@@ -36,6 +36,9 @@ Fails if ./<project-name> already exists or the starter is missing.`,
 			Short: "Convert fonts",
 			Long: `Run from the folder with font files (FontName-Weight.ttf or .otf):
 
+  - asks whether to subset fonts to Latin + Cyrillic (pyftsubset): drops
+    icons, other scripts and unused glyphs, often 10x+ smaller; applies to
+    .ttf/.otf before conversion and to existing .woff/.woff2 in place
   - converts every .ttf/.otf to .woff (ttf2woff) and .woff2 (woff2_compress),
     the source is removed only if both conversions succeed
   - asks the relative path to fonts (default: assets/fonts)
@@ -47,7 +50,8 @@ Light 300, Regular normal, Medium 500, SemiBold/DemiBold 600, Bold 700,
 ExtraBold 800, Black/Heavy 900, Italic -> font-style: italic.
 font-family is the part before the first "-": OpenSans-Bold -> OpenSans.
 
-Needs: npm install -g ttf2woff, sudo pacman -S woff2.`,
+Needs: npm install -g ttf2woff, sudo pacman -S woff2,
+python-fonttools python-brotli (for subsetting).`,
 			Color: color.Blue,
 			Run:   scripts.ConvertFonts,
 		},
