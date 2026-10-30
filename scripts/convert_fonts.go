@@ -3,6 +3,7 @@ package scripts
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 	"time"
@@ -17,8 +18,8 @@ import (
 	"github.com/seriiserii825/go-libs/tools"
 )
 
-// ConvertFonts конвертирует .ttf из текущей папки в .woff и .woff2 (ttf
-// удаляется только если обе конвертации прошли), создаёт fonts.css с
+// ConvertFonts конвертирует .ttf/.otf из текущей папки в .woff и .woff2
+// (исходник удаляется только если обе конвертации прошли), создаёт fonts.css с
 // @font-face для каждого шрифта и копирует его в буфер обмена.
 func ConvertFonts() error {
 	start := time.Now()
@@ -27,25 +28,25 @@ func ConvertFonts() error {
 	if err != nil {
 		return err
 	}
-	ttf := withExt(files, ".ttf")
-	if len(ttf) == 0 && len(withExt(files, ".woff")) == 0 && len(withExt(files, ".woff2")) == 0 {
+	src := append(withExt(files, ".ttf"), withExt(files, ".otf")...)
+	if len(src) == 0 && len(withExt(files, ".woff")) == 0 && len(withExt(files, ".woff2")) == 0 {
 		printFontsHelp()
 		return nil
 	}
 
 	need := []tools.Tool{tools.Clipboard(), tools.Notify}
-	if len(ttf) > 0 {
+	if len(src) > 0 {
 		need = append(need, toolTTF2Woff, toolWoff2)
 	}
 	if err := tools.Require(need...); err != nil {
 		return err
 	}
 
-	if len(ttf) > 0 {
-		for _, f := range ttf {
+	if len(src) > 0 {
+		for _, f := range src {
 			// Битый шрифт не должен останавливать остальные: пропускаем его
-			// и оставляем .ttf на месте.
-			if err := convertTTF(f); err != nil {
+			// и оставляем исходник на месте.
+			if err := convertFont(f); err != nil {
 				msg.Warning(fmt.Sprintf("%s skipped: %v", f, err))
 				continue
 			}
@@ -78,10 +79,11 @@ func ConvertFonts() error {
 	return nil
 }
 
-// convertTTF создаёт рядом с X.ttf файлы X.woff и X.woff2; если одна из
-// конвертаций не удалась, уже созданные файлы удаляются.
-func convertTTF(f string) error {
-	base := strings.TrimSuffix(f, ".ttf")
+// convertFont создаёт рядом с X.ttf/X.otf файлы X.woff и X.woff2; если одна
+// из конвертаций не удалась, уже созданные файлы удаляются. ttf2woff и
+// woff2_compress работают с любым sfnt, в том числе с CFF-шрифтами .otf.
+func convertFont(f string) error {
+	base := strings.TrimSuffix(f, filepath.Ext(f))
 	if err := command.Run("ttf2woff", f, base+".woff"); err != nil {
 		os.Remove(base + ".woff")
 		return err
@@ -185,8 +187,8 @@ func withExt(files []string, ext string) []string {
 }
 
 func printFontsHelp() {
-	fmt.Println(color.Wrap(color.Red, "[ERROR]") + " No .ttf, .woff or .woff2 files found in the current directory.")
-	fmt.Println("Expected format: FontName-Weight.ttf or FontName-Weight.woff")
+	fmt.Println(color.Wrap(color.Red, "[ERROR]") + " No .ttf, .otf, .woff or .woff2 files found in the current directory.")
+	fmt.Println("Expected format: FontName-Weight.ttf, FontName-Weight.otf or FontName-Weight.woff")
 	fmt.Println("\nExamples:")
 	for _, f := range []string{"Roboto-Regular.ttf", "Roboto-Bold.ttf", "Roboto-Italic.ttf", "Roboto-Light.ttf", "Roboto-ExtraBold.ttf", "Roboto-SemiBold.ttf"} {
 		fmt.Println("  " + color.Wrap(color.Green, f))

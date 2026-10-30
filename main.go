@@ -34,10 +34,10 @@ Fails if ./<project-name> already exists or the starter is missing.`,
 		{
 			Name:  "convert-fonts",
 			Short: "Convert fonts",
-			Long: `Run from the folder with font files (FontName-Weight.ttf):
+			Long: `Run from the folder with font files (FontName-Weight.ttf or .otf):
 
-  - converts every .ttf to .woff (ttf2woff) and .woff2 (woff2_compress),
-    the .ttf is removed only if both conversions succeed
+  - converts every .ttf/.otf to .woff (ttf2woff) and .woff2 (woff2_compress),
+    the source is removed only if both conversions succeed
   - asks the relative path to fonts (default: assets/fonts)
   - writes fonts.css with @font-face for every font and copies it
     to the clipboard
